@@ -70,6 +70,9 @@ pacman -Sy --needed git base-devel
 git clone https://aur.archlinux.org/xfce-polkit.git
 cd xfce-polkit && makepkg -si && cd .. && rm -rf xfce-polkit
 
+#### Install udisks
+pacman -Sy --needed udisks2
+
 sed -i '1 i\exec --no-startup-id /usr/lib/xfce-polkit/xfce-polkit &' /home/rb/.xinitrc
 
 
