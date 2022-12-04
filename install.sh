@@ -1,4 +1,9 @@
-#TODO create paritions
+sfdisk /dev/nvme0n1 < nvme0n1.sfdisk
+
+mkfs.fat -F 32 /dev/nvme0n1p1
+fatlabel /dev/nvme0n1p1 BOOT
+mkfs.ext4 -L ROOT /dev/nvme0n1p2
+mkfs.ext4 -L HOME /dev/nvme0n1p3
 
 mount /dev/disk/by-label/ROOT /mnt
 mkdir /mnt/boot
