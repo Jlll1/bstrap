@@ -39,10 +39,15 @@ pacman -S firefox keepassxc transmission-gtk neovim
 #### Set up git/github key
 echo 'Setting up git/github key'
 pacman -Sy --needed openssh git
-git config --global user.email "arghantentua@tutanota.com"
-git config --global user.name "Jlll1"
 
-ssh-keygen -t ed25519 -C "arghantentua@tutanota.com" -N $GH_SSH_PASSPHRASE -f /home/rb/.ssh/gh
+cat << EOT > /home/rb/.gitconfig
+[user]
+	email = "arghantentua@tutanota.com"
+	name = "Jlll1"
+EOT
+
+PASSPHRASE=${GH_SSH_PASSPHRASE:''}
+ssh-keygen -t ed25519 -C "arghantentua@tutanota.com" -N $PASSPHRASE -f /home/rb/.ssh/gh
 
 ##### Set up xorg
 echo 'Setting up xorg'
