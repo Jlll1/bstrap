@@ -1,15 +1,10 @@
-sfdisk /dev/nvme0n1 < nvme0n1.sfdisk
-
 mkfs.fat -F 32 /dev/nvme0n1p1
 fatlabel /dev/nvme0n1p1 BOOT
 mkfs.ext4 -L ROOT /dev/nvme0n1p2
-mkfs.ext4 -L HOME /dev/nvme0n1p3
 
-mount /dev/disk/by-label/ROOT /mnt
+mount /dev/nvme0n1p2 /mnt
 mkdir /mnt/boot
-mount /dev/disk/by-label/BOOT /mnt/boot
-mkdir /mnt/home
-mount /dev/disk/by-label/HOME /mnt/home
+mount /dev/nvme0n1p1 /mnt/boot
 
 #TODO setup wireless
 
@@ -23,7 +18,7 @@ ln -sf /usr/share/zoneinfo/Europe/Warsaw /etc/localtime
 hwclock --systohc
 
 pacman -S grub os-prober efibootmgr
-grub-install --target=x86_64_efi --efi-directory=/boot --bootloader-id=grub
+grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=grub
 grub-mkconfig -o /boot/grub/grub.cfg
 
 echo 'Root password: '
@@ -68,16 +63,43 @@ cd st && make install && cd .. && rm -rf st
 
 echo 'exec dwm' > /home/rb/.xinitrc
 
-
 #### Set up polkit
 echo 'Setting up polkit'
 pacman -Sy --needed git base-devel
 git clone https://aur.archlinux.org/xfce-polkit.git
 cd xfce-polkit && makepkg -si && cd .. && rm -rf xfce-polkit
+sed -i '1 i\exec --no-startup-id /usr/lib/xfce-polkit/xfce-polkit &' /home/rb/.xinitrc
 
 #### Install udisks
 pacman -Sy --needed udisks2
 
-sed -i '1 i\exec --no-startup-id /usr/lib/xfce-polkit/xfce-polkit &' /home/rb/.xinitrc
+#### Setup arch repos
+printf '\n[universe]\n' >> /etc/pacman.conf
+printf '\nServer = https://universe.artixlinux.org/$arch' >> /etc/pacman.conf
+printf '\nServer = https://mirror1.artixlinux.org/universe/$arch' >> /etc/pacman.conf
+printf '\nServer = https://mirror.pascalpuffke.de/artix-universe/$arch' >> /etc/pacman.conf
+printf '\nServer = https://artixlinux.qontinuum.space/artixlinux/universe/os/$arch' >> /etc/pacman.conf
+printf '\nServer = https://mirror1.cl.netactuate.com/artix/universe/$arch' >> /etc/pacman.conf
+printf '\nServer = https://ftp.crifo.org/artix-universe/\n' >> /etc/pacman.conf
 
+pacman -Sy artix-archlinux-support
 
+printf '[extra]\n' >> /etc/pacman.conf
+printf 'Include = /etc/pacman.d/mirrorlist-arch\n' >> /etc/pacman.conf
+printf '\n[community]\n' >> /etc/pacman.conf
+printf 'Include = /etc/pacman.d/mirrorlist-arch\n' >> /etc/pacman.conf
+printf '\n[multilib]\n' >> /etc/pacman.conf
+printf 'Include = /etc/pacman.d/mirrorlist-arch\n' >> /etc/pacman.conf
+
+#### Setup backlight controls
+echo 'Setting up backlight controls'
+pacman -Sy acpid-runit
+ln -s /etc/runit/sv/acpid /run/runit/service
+sv up acpid
+usermod -aG video rb
+chgrp video /sys/class/backlight/amdgpu_b10/brightness
+
+printf '#!/bin/sh\ncb=$(cat /sys/class/backlight/amdgpu_bl0/brightness)\necho $(($cb + 20)) > /sys/class/backlight/amdgpu_bl0/brightness\n' > /usr/local/bin/brightness_up
+chmod +x /usr/local/bin/brightness_up
+printf '#1/bin/sh\ncb=$(cat /sys/class/backlight/amdgpu_bl0/brightness\necho $(($cb - 20)) > /sys/class/backlight/amdgpu_bl0/brightness\n' > /usr/local/bin/brightness_down
+chmod +x /usr/local/bin/brightness_down
