@@ -1,19 +1,3 @@
-mkfs.fat -F 32 /dev/nvme0n1p1
-fatlabel /dev/nvme0n1p1 BOOT
-mkfs.ext4 -L ROOT /dev/nvme0n1p2
-
-mount /dev/nvme0n1p2 /mnt
-mkdir /mnt/boot
-mount /dev/nvme0n1p1 /mnt/boot
-
-#TODO setup wireless
-
-basestrap /mnt base base-devel runit elogind-runit
-basestrap /mnt linux linux-firmware
-
-fstabgen -U /mnt >> /mnt/etc/fstab
-artix-chroot /mnt
-
 ln -sf /usr/share/zoneinfo/Europe/Warsaw /etc/localtime
 hwclock --systohc
 
@@ -27,7 +11,10 @@ useradd -m rb
 echo 'User password: '
 passwd rb
 
-printf "\n127.0.0.1\tlocalhost\n::1\t\tlocalhost\n" >> /etc/hosts
+cat << EOT >> /etc/hosts
+127.0.0.1	localhost
+::1		localhost
+EOT
 
 pacman -S dhcpcd wpa_supplicant connman-runit connman-gtk
 ln -s /etc/runit/sv/connmand /etc/runit/runsvdir/default
@@ -63,9 +50,6 @@ cd dwm && make install && cd .. && rm -rf dwm
 git clone https://git.suckless.org/dmenu
 cd dmenu && make install && cd .. && rm -rf dmenu
 
-git clone https://git.suckless.org/st
-cd st && make install && cd .. && rm -rf st
-
 echo 'exec dwm' > /home/rb/.xinitrc
 
 #### Set up polkit
@@ -79,22 +63,32 @@ sed -i '1 i\exec --no-startup-id /usr/lib/xfce-polkit/xfce-polkit &' /home/rb/.x
 pacman -Sy --needed udisks2
 
 #### Setup arch repos
-printf '\n[universe]\n' >> /etc/pacman.conf
-printf '\nServer = https://universe.artixlinux.org/$arch' >> /etc/pacman.conf
-printf '\nServer = https://mirror1.artixlinux.org/universe/$arch' >> /etc/pacman.conf
-printf '\nServer = https://mirror.pascalpuffke.de/artix-universe/$arch' >> /etc/pacman.conf
-printf '\nServer = https://artixlinux.qontinuum.space/artixlinux/universe/os/$arch' >> /etc/pacman.conf
-printf '\nServer = https://mirror1.cl.netactuate.com/artix/universe/$arch' >> /etc/pacman.conf
-printf '\nServer = https://ftp.crifo.org/artix-universe/\n' >> /etc/pacman.conf
+
+cat << EOT >> /etc/pacman.conf
+
+[universe]
+Server = https://universe.artixlinux.org/$arch
+Server = https://mirror1.artixlinux.org/universe/$arch
+Server = https://mirror.pascalpuffke.de/artix-universe/$arch
+Server = https://artixlinux.qontinuum.space/artixlinux/universe/os/$arch
+Server = https://mirror1.cl.netactuate.com/artix/universe/$arch
+Server = https://ftp.crifo.org/artix-universe/
+
+EOT
 
 pacman -Sy artix-archlinux-support
 
-printf '[extra]\n' >> /etc/pacman.conf
-printf 'Include = /etc/pacman.d/mirrorlist-arch\n' >> /etc/pacman.conf
-printf '\n[community]\n' >> /etc/pacman.conf
-printf 'Include = /etc/pacman.d/mirrorlist-arch\n' >> /etc/pacman.conf
-printf '\n[multilib]\n' >> /etc/pacman.conf
-printf 'Include = /etc/pacman.d/mirrorlist-arch\n' >> /etc/pacman.conf
+cat << EOT >> /etc/pacman.conf
+[extra]
+Include = /etc/pacman.d/mirrorlist-arch
+
+[community]\n' >> /etc/pacman.conf
+Include = /etc/pacman.d/mirrorlist-arch
+
+[multilib]\n' >> /etc/pacman.conf
+Include = /etc/pacman.d/mirrorlist-arch
+
+EOT
 
 #### Setup backlight controls
 echo 'Setting up backlight controls'
@@ -104,7 +98,26 @@ sv up acpid
 usermod -aG video rb
 chgrp video /sys/class/backlight/amdgpu_b10/brightness
 
-printf '#!/bin/sh\ncb=$(cat /sys/class/backlight/amdgpu_bl0/brightness)\necho $(($cb + 20)) > /sys/class/backlight/amdgpu_bl0/brightness\n' > /usr/local/bin/brightness_up
+cat << EOT > /usr/local/bin/brightness_up
+#!/bin/sh
+
+cb=$(cat /sys/class/backlight/amdgpu_bl0/brightness)
+echo $(($cb + 20)) > /sys/class/backlight/amdgpu_bl0/brightness
+
+EOT
 chmod +x /usr/local/bin/brightness_up
-printf '#1/bin/sh\ncb=$(cat /sys/class/backlight/amdgpu_bl0/brightness\necho $(($cb - 20)) > /sys/class/backlight/amdgpu_bl0/brightness\n' > /usr/local/bin/brightness_down
+
+cat << EOT > /usr/local/bin/brightness_up
+#!/bin/sh
+
+cb=$(cat /sys/class/backlight/amdgpu_bl0/brightness
+echo $(($cb - 20)) > /sys/class/backlight/amdgpu_bl0/brightness
+
+EOT
 chmod +x /usr/local/bin/brightness_down
+
+#### Install alacritty
+pacman -Sy alacritty
+
+#### Set up pavucontrol
+pacman -Sy pulseuadio pavucontrol
