@@ -43,6 +43,8 @@ pacman -Sy --needed xorg-server xf86-video-amdgpu xorg-xinit
 #### Set up suckless suite
 echo 'Setting up suckless suite'
 pacman -Sy --needed git
+pacman -S --needed imlib2 #needed for icons in dwm
+pacman -S --needed ttf-font-awesome
 
 git clone https://github.com/Jlll1/dwm
 cd dwm && make install && cd .. && rm -rf dwm
@@ -92,7 +94,7 @@ EOT
 
 #### Setup backlight controls
 echo 'Setting up backlight controls'
-pacman -Sy acpid-runit
+pacman -Sy acpid acpid-runit
 ln -s /etc/runit/sv/acpid /run/runit/service
 sv up acpid
 usermod -aG video rb
@@ -117,7 +119,26 @@ EOT
 chmod +x /usr/local/bin/brightness_down
 
 #### Install alacritty
-pacman -Sy alacritty
+pacman -S --needed alacritty
 
 #### Set up pavucontrol
-pacman -Sy pulseuadio pavucontrol
+pacman -S --needed pulseuadio pavucontrol
+
+#### Set up mpv
+pacman -S --needed mpv
+
+# mpv-autosub
+pacman -S --needed python python-pip
+pip install setuptools subliminal
+
+git clone https://github.com/davidde/mpv-autosub
+mkdir -p /home/rb/.config/mpv/scripts
+cp mpv-autosub/autosub.lua /home/rb/.config/mpv/scripts/
+rm -r mpv-autosub
+
+# autosubsync-mpv
+pacman -S --needed ffmpeg
+pip install ffsubsync
+git clone https://github.com/Ajatt-Tools/autosubsync-mpv /home/rb/.config/mpv/scripts/autosubsync
+
+
