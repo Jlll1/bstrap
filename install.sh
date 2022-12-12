@@ -103,7 +103,8 @@ cat << EOT > /usr/local/bin/brightness_up
 #!/bin/sh
 
 cb=$(cat /sys/class/backlight/amdgpu_bl0/brightness)
-echo $(($cb + 20)) > /sys/class/backlight/amdgpu_bl0/brightness
+nb=$(($cb+25))
+echo $nb > /sys/class/backlight/amdgpu_bl0/brightness
 
 EOT
 chmod +x /usr/local/bin/brightness_up
@@ -112,7 +113,8 @@ cat << EOT > /usr/local/bin/brightness_up
 #!/bin/sh
 
 cb=$(cat /sys/class/backlight/amdgpu_bl0/brightness
-echo $(($cb - 20)) > /sys/class/backlight/amdgpu_bl0/brightness
+nb=$((cb - 25))
+echo $nb > /sys/class/backlight/amdgpu_bl0/brightness
 
 EOT
 chmod +x /usr/local/bin/brightness_down
@@ -145,4 +147,18 @@ cat << EOT >> /home/rb/.bash_profile
 if [ -z "${DISPLAY}" ] && [ "${XDG_VTNR}" -eq 1 ]; then
   exec startx
 fi
+EOT
+
+#### Setup notifications
+pacman -S --needed dunst
+sed -i '1 i\exec --no-startup-id dunst &' /home/rb/.xinitrc
+
+# brightness
+cat << EOT >> /usr/local/bin/brightness_up
+pv=$(echo "scale=2 ; ($nb / 255 * 100)" | bc)
+dunstify -a "changeBrightness" -h int:value:"$pv" "Brightness"
+EOT
+cat << EOT >> /usr/local/bin/brightness_down
+pv=$(echo "scale=2 ; ($nb / 255 * 100)" | bc)
+dunstify -a "changeBrightness" -h int:value:"$pv" "Brightness"
 EOT
