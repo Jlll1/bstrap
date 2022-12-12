@@ -42,9 +42,8 @@ pacman -Sy --needed xorg-server xf86-video-amdgpu xorg-xinit
 
 #### Set up suckless suite
 echo 'Setting up suckless suite'
-pacman -Sy --needed git
+pacman -Sy --needed git ttf-font-awesome xorg-xsetroot
 pacman -S --needed imlib2 #needed for icons in dwm
-pacman -S --needed ttf-font-awesome
 
 git clone https://github.com/Jlll1/dwm
 cd dwm && make install && cd .. && rm -rf dwm
