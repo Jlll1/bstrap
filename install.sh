@@ -140,4 +140,9 @@ pacman -S --needed ffmpeg
 pip install ffsubsync
 git clone https://github.com/Ajatt-Tools/autosubsync-mpv /home/rb/.config/mpv/scripts/autosubsync
 
-
+#### Autostart X at login
+cat << EOT >> /home/rb/.bash_profile
+if [ -z "${DISPLAY}" ] && [ "${XDG_VTNR}" -eq 1 ]; then
+  exec startx
+fi
+EOT
