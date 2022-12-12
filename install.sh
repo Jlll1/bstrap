@@ -156,9 +156,39 @@ sed -i '1 i\exec --no-startup-id dunst &' /home/rb/.xinitrc
 # brightness
 cat << EOT >> /usr/local/bin/brightness_up
 pv=$(echo "scale=2 ; ($nb / 255 * 100)" | bc)
-dunstify -a "changeBrightness" -h int:value:"$pv" "Brightness"
+dunstify -a "changebrightness" -h int:value:"$pv" "Brightness"
+
 EOT
 cat << EOT >> /usr/local/bin/brightness_down
 pv=$(echo "scale=2 ; ($nb / 255 * 100)" | bc)
-dunstify -a "changeBrightness" -h int:value:"$pv" "Brightness"
+dunstify -a "changebrightness" -h int:value:"$pv" "Brightness"
+EOT
+
+# volume
+cat << EOT > /usr/local/bin/volume_up
+pactl -- set-sink-mute 0 0
+pactl -- set-sink-volume 0 +10%
+cv=$(pactl -- get-sink-volume 0 | head -n 1 | awk '{print $5}')
+dunstify -a "changevolume" -h int:value:"$cv" "Volume"
+EOT
+chmod +x /usr/local/bin/volume_up
+
+cat << EOT > /usr/local/bin/volume_down
+pactl -- set-sink-mute 0 0
+pactl -- set-sink-volume 0 -10%
+cv=$(pactl -- get-sink-volume 0 | head -n 1 | awk '{print $5}')
+dunstify -a "changevolume" -h int:value:"$cv" "Volume"
+EOT
+chmod +x /usr/local/bin/volume_down
+
+cat << EOT > /usr/local/bin/volume_mute
+pactl -- set-sink-mute 0 toggle
+cm=$(pactl -- get-sink-mute 0 | awk '{ print $2}')
+if [ "$cm" = "yes" ]; then
+  cv="0%"
+else
+  cv=$(pactl -- get-sink-volume 0 | head -n 1 | awk '{print $5}')
+fi
+
+dunstify -a "changevolume" -h int:value:"$cv" "Volume"
 EOT
