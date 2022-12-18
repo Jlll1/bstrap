@@ -192,3 +192,26 @@ fi
 
 dunstify -a "changevolume" -h int:value:"$cv" "Volume"
 EOT
+
+#### Setup dotnet
+pacman -S --needed dotnet-sdk dotnet-runtime aspnet-runtime
+
+git clone https://aur.archlinux.org/dotnet-core-6.0-bin.git
+cd dotnet-core-6.0-bin && mkpkg -si && cd ..
+rm -rf dotnet-core-6.0-bin
+
+cat << EOT >> /home/rb/.bashrc
+export DOTNET_CLI_TELEMETRY_OPTOUT=1
+export PATH="$PATH:/home/rb/.dotnet/tools"
+export DOTNET_ROOT=/home/rb/.dotnet
+export PATH=$PATH:$DOTNET_ROOT
+EOT
+
+#### Setup PS1
+cat << EOT >> /home/rb/.bashrc
+git_branch() {
+    git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
+}
+export PS1="\W\[\033[32m\]\$(git_branch)\[\033[00m\]$ "
+EOT
+
