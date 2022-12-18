@@ -215,3 +215,32 @@ git_branch() {
 export PS1="\W\[\033[32m\]\$(git_branch)\[\033[00m\]$ "
 EOT
 
+#### Setup mounting shortcuts
+cat << EOT > /usr/local/bin/dmenu_mount
+#!/bin/sh
+
+mount() {
+  DEVS=$(lsblk -rp | tail -n +2 | while read -r -- dev _ _ _ _ type _; do \
+    if [ "$type" = part ]; then echo "${dev}\n"; fi; done)
+
+  TO_MOUNT=$(echo -e ${DEVS::-2} | dmenu)
+  if [ ! -z "$TO_MOUNT" ]; then
+    RESULT=$(udisksctl mount -b $TO_MOUNT)
+    dunstify -a "dmenu_mount" $RESULT
+  fi
+}
+
+unmount() {
+  DEVS=$(lsblk -rp | tail -n +2 | while read -r -- dev _ _ _ _ _ mountpoints; do \
+    if [ ! -z "$mountpoints" ]; then echo "${dev}\n"; fi; done)
+
+  TO_UNMOUNT=$(echo -e ${DEVS::-2} | dmenu)
+  if [ ! -z "$TO_UNMOUNT" ]; then
+    RESULT=$(udisksctl unmount -b $TO_UNMOUNT)
+    dunstify -a "dmenu_mount" $RESULT
+  fi
+}
+
+"$@"
+EOT
+chmod +x /usr/local/bin/dmenu_mount
