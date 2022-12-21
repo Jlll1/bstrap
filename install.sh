@@ -19,7 +19,7 @@ EOT
 pacman -S dhcpcd wpa_supplicant connman-runit connman-gtk
 ln -s /etc/runit/sv/connmand /etc/runit/runsvdir/default
 
-# Base pkgs
+#### Base pkgs
 pacman -S firefox keepassxc transmission-gtk neovim
 
 
