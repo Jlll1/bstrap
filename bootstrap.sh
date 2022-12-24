@@ -1,10 +1,13 @@
-mkfs.fat -F 32 /dev/nvme0n1p1
-fatlabel /dev/nvme0n1p1 BOOT
-mkfs.ext4 -L ROOT /dev/nvme0n1p2
+BOOT_PARTITION="/dev/nvme0n1p1"
+ROOT_PARTITION="/dev/nvme0n1p2"
 
-mount /dev/nvme0n1p2 /mnt
+mkfs.fat -F 32 $BOOT_PARTITION
+fatlabel $BOOT_PARTITION BOOT
+mkfs.ext4 -L ROOT $ROOT_PARTITION
+
+mount $ROOT_PARTITION /mnt
 mkdir /mnt/boot
-mount /dev/nvme0n1p1 /mnt/boot
+mount $BOOT_PARTITION /mnt/boot
 
 #TODO setup wireless
 

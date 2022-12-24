@@ -197,7 +197,7 @@ EOT
 pacman -S --needed dotnet-sdk dotnet-runtime aspnet-runtime
 
 git clone https://aur.archlinux.org/dotnet-core-6.0-bin.git
-cd dotnet-core-6.0-bin && mkpkg -si && cd ..
+cd dotnet-core-6.0-bin && makepkg -si && cd ..
 rm -rf dotnet-core-6.0-bin
 
 cat << EOT >> /home/rb/.bashrc
