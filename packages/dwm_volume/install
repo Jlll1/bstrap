@@ -1,0 +1,5 @@
+#!/bin/sh
+
+require pulseaudio dunst
+cp source/dwm_volume /usr/local/bin/dwm_volume
+chmod +x /usr/local/bin/dwm_volume

@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# openssh for ssh authentication
+require openssh
+
+install git
+
+cp configuration/gitconfig /home/${USER_NAME}/.gitconfig

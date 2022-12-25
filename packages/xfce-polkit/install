@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# build dependency
+require git base-devel
+
+git clone https://aur.archlinux.org/xfce-polkit.git
+cd xfce-polkit && makepkg -si && cd .. && rm -rf xfce-polkit
+sed -i '1 i\exec --no-startup-id /usr/lib/xfce-polkit/xfce-polkit &' "/home/${USER_NAME}/.xinitrc"
+

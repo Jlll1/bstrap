@@ -1,0 +1,4 @@
+#!/bin/sh
+
+install alacritty
+cp configuration/alacritty.yml /home/${USER_NAME}/.config/alacritty.yml

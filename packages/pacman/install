@@ -1,0 +1,6 @@
+#!/bin/sh
+
+cat configuration/artix-universe >> /etc/pacman.conf
+pacman -Sy artix-archlinux-support
+cat configuration/arch-repos >> /etc/pacman.conf
+pacman -Syy

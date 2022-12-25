@@ -1,0 +1,8 @@
+#!/bin/sh
+
+
+# .bashrc autostartx
+require xorg-xinit
+
+cp configuration/bashrc /home/${USER_NAME}/.bashrc
+cp configuration/bash_profile /home/${USER_NAME}/.bash_profile

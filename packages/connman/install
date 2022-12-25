@@ -1,0 +1,5 @@
+#!/bin/sh
+
+require dhcpcd wpa_supplicant
+install connman-runit connman-gtk
+ln -s /etc/runit/sv/connmand /etc/runit/runsvdir/default

@@ -1,0 +1,5 @@
+#!/bin/sh
+
+require dmenu udisks2 dunst
+cp source/dmenu_mount /usr/local/bin/dmenu_mount
+chmod +x /usr/local/bin/dmenu_mount

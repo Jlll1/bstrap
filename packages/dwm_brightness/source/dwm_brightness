@@ -1,0 +1,19 @@
+#!/bin/sh
+
+down() {
+  cb=$(cat /sys/class/backlight/amdgpu_bl0/brightness
+  nb=$((cb - 25))
+  echo $nb > /sys/class/backlight/amdgpu_bl0/brightness
+  pv=$(echo "scale=2 ; ($nb / 255 * 100)" | bc)
+  dunstify -a "changebrightness" -h int:value:"$pv" "Brightness"
+}
+
+up() {
+  cb=$(cat /sys/class/backlight/amdgpu_bl0/brightness)
+  nb=$(($cb+25))
+  echo $nb > /sys/class/backlight/amdgpu_bl0/brightness
+  pv=$(echo "scale=2 ; ($nb / 255 * 100)" | bc)
+  dunstify -a "changebrightness" -h int:value:"$pv" "Brightness"
+}
+
+"$@"

@@ -1,0 +1,5 @@
+#!/bin/sh
+
+
+git clone https://git.suckless.org/dmenu
+cd dmenu && make install && cd .. && rm -rf dmenu

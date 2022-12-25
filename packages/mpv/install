@@ -1,0 +1,16 @@
+#!/bin/sh
+
+
+# mpv-autosub
+require python python-pip
+pip install setuptools subliminal
+mkdir -p /home/${USER_NAME}/.config/mpv/scripts
+cp configuration/scripts/autosub.lua /home/${USER_NAME}/.config/mpv/scripts/autosub.lua
+
+# autosubsync-mpv
+require ffmpeg python python-pip
+pip install ffsubsync
+mkdir -p /home/${USER_NAME}/.config/mpv/scripts
+cp configuration/scripts/autosubsync /home/${USER_NAME}/.config/mpv/scripts/autosubsync
+
+install mpv

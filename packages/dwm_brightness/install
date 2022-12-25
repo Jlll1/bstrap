@@ -1,0 +1,11 @@
+#!/bin/sh
+
+require dunst acpid acpid-runit
+
+ln -s /etc/runit/sv/acpid /run/runit/service
+sv up acpid
+usermod -aG video ${USER_NAME}
+chgrp video /sys/class/backlight/amdgpu_b10/brightness
+
+cp source/dwm_brightness /usr/local/bin/dwm_brightness
+chmod +x /usr/local/bin/dwm_brightness
