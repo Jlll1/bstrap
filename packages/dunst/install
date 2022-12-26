@@ -1,4 +1,6 @@
 #!/bin/sh
 
 install dunst
+mkdir -p /home/${USER_NAME}/.config/dunst
+cp -r configuration/* /home/{$USER_NAME}/.config/dunst/
 sed -i '1 i\exec --no-startup-id dunst &' /home/${USER_NAME}/.xinitrc
