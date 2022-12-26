@@ -1,0 +1,8 @@
+#!/bash/sh
+
+# using .xinitrc
+require xorg-xinit
+
+install feh
+cp configuration/wallpaper.png /home/${USER_NAME}/.config/wallpaper.png
+sed -i "1 i\exec --no-startup-id feh --bg-scale /home/${USER_NAME}/.config/wallpaper.png" "/home/${USER_NAME}/.xinitrc"
