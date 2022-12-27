@@ -1,21 +1,30 @@
 #!/bin/sh
 
+p=~/.local/share/bookmark
+
 get() {
-  echo -n "$(cat ~/.local/share/bookmark | dmenu -l 10)" | xclip -selection c
+  echo -n "$(cat "$p" | dmenu -l 10)" | xclip -selection c
+}
+
+new() {
+  if grep -q -F "$1" "$p"; then
+    dunstify -a "bookmark" "$1 is already bookmarked"
+  else
+    echo "$1" >> "$p"
+    dunstify -a "bookmark" "$1 bookmarked!"
+  fi
 }
 
 # from clipboard
 fc() {
   value=$(xclip -selection clipboard -o)
-  echo "$value" >> ~/.local/share/bookmark
-  dunstify -a "bookmark" "$value bookmarked!"
+  new $value
 }
 
 # from selection
 fs() {
   value=$(xclip -selection primary -o)
-  echo "$value" >> ~/.local/share/bookmark
-  dunstify -a "bookmark" "$value bookmarked!"
+  new $value
 }
 
 "$@"
