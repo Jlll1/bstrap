@@ -2,7 +2,7 @@
 
 # imlib2 is required for displaying icons
 require git xorg-xsetroot imlib2 xorg-xinit
-require dmenu_mount dwm_volume dwm_brightness
+require dmenu_mount dwm_volume dwm_brightness bookmark
 
 git clone https://github.com/Jlll1/dwm
 cd dwm && make install && cd .. && rm -rf dwm

@@ -1,0 +1,21 @@
+#!/bin/sh
+
+get() {
+  echo -n "$(cat ~/.local/share/bookmark | dmenu -l 10)" | xclip -selection c
+}
+
+# from clipboard
+fc() {
+  value=$(xclip -selection clipboard -o)
+  echo "$value" >> ~/.local/share/bookmark
+  dunstify -a "bookmark" "$value bookmarked!"
+}
+
+# from selection
+fs() {
+  value=$(xclip -selection primary -o)
+  echo "$value" >> ~/.local/share/bookmark
+  dunstify -a "bookmark" "$value bookmarked!"
+}
+
+"$@"

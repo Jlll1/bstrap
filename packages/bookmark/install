@@ -1,0 +1,5 @@
+#!/bin/sh
+
+require xclip
+cp source/bookmark /usr/local/bin/bookmark
+chmod +x /usr/local/bin/bookmark
