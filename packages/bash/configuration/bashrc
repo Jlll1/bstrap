@@ -2,3 +2,5 @@ git_branch() {
     git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
 }
 export PS1="\W\[\033[32m\]\$(git_branch)\[\033[00m\]$ "
+
+alias v='sudo docker run -ti --rm --network none -v $(pwd):/ws rbilski00/nvimd'
