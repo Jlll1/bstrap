@@ -10,8 +10,14 @@ new() {
   if grep -q -F "$1" "$p"; then
     dunstify -a "bookmark" "$1 is already bookmarked"
   else
-    echo "$1" >> "$p"
-    dunstify -a "bookmark" "$1 bookmarked!"
+    if [[ "$1" =~ ^.*youtube\.com\/watch\?v=.*$ ]]; then
+      dunstify -a "bookmark" "starting download of $1"
+      yt-dlp -S res,ext:mp4:m4a --recode mp4 -P ~/Videos "$1" &&
+      dunstify -a "bookmark" "$1 downloaded!"
+    else
+      echo "$1" >> "$p"
+      dunstify -a "bookmark" "$1 bookmarked!"
+    fi
   fi
 }
 

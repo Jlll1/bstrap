@@ -1,5 +1,5 @@
 #!/bin/sh
 
-require xclip
+require xclip yt-dlp dunstify
 cp source/bookmark /usr/local/bin/bookmark
 chmod +x /usr/local/bin/bookmark
