@@ -1,5 +1,5 @@
 #!/bin/sh
 
-require xclip yt-dlp dunstify
+require xclip yt-dlp dunstify cala
 cp source/bookmark /usr/local/bin/bookmark
 chmod +x /usr/local/bin/bookmark
