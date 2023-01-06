@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# using .xinitrc
+require xorg-xinit
+
+cp source/autoxrandr /usr/local/bin/autoxrandr
+chmod +x /usr/local/bin/autoxrandr
+sed -i "1 i\exec autoxrandr &" "/home/${USER_NAME}/.xinitrc"

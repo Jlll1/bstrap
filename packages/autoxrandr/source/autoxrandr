@@ -1,0 +1,12 @@
+#!/bin/sh
+
+while true; do
+  if [[ $(xrandr | grep -c " connected ") -gt 1 ]]; then
+    xrandr --output DisplayPort-3 --auto
+    xrandr --output eDP --off
+  else
+    xrandr --output eDP --auto
+    xrandr --output DisplayPort-3 --off
+  fi
+  sleep 5s
+done;
