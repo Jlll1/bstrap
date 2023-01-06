@@ -3,5 +3,4 @@
 require git
 
 git clone https://github.com/Jlll1/cala
-cp cala/cala.sh /usr/local/bin/cala && rm -rf cala
-chmod +x /usr/local/bin/cala
+cd cala && make install && cd .. && rm -rf cala
