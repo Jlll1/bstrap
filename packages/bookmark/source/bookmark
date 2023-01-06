@@ -12,6 +12,7 @@ new() {
   else
     if [[ "$1" =~ ^.*youtube\.com\/watch\?v=.*$ ]]; then
       dunstify -a "bookmark" "starting download of $1"
+      echo "$1" >> ~/Videos/list
       cala add "yt-dlp -S res,ext:mp4 --recode mp4 -P ~/Videos $1 && dunstify -a bookmark $1\ downloaded!"
     else
       echo "$1" >> "$p"
